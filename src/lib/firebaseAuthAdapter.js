@@ -7,12 +7,6 @@
 //   .loginWithProvider('google', redirectPath)
 //   .logout(redirectUrl?)
 //   .redirectToLogin(redirectUrl)
-//
-// ESTADO: escrito y verificado sintácticamente, NO probado contra un proyecto
-// Firebase real. NO está conectado a AuthContext.jsx todavía — ese es
-// deliberadamente el ÚLTIMO paso de la migración (Fase B, punto 6 del plan),
-// porque cortar autenticación en caliente es la operación de mayor riesgo de
-// las que quedan pendientes.
 
 import {
   getAuth,
@@ -24,6 +18,8 @@ import {
   sendPasswordResetEmail,
   confirmPasswordReset,
   signOut,
+  setPersistence,            // CORRECCIÓN: Importado para asegurar la sesión
+  browserLocalPersistence,   // CORRECCIÓN: Importado para asegurar la sesión
 } from 'firebase/auth';
 import { doc, getDoc, setDoc, getFirestore, serverTimestamp } from 'firebase/firestore';
 import app from './firebase';
@@ -85,8 +81,7 @@ export const firebaseAuthAdapter = {
     return ensureUserProfile(cred.user);
   },
 
-  /** Registro con email/contraseña (Base44 no distinguía login/registro en un solo método;
-   *  aquí sí, porque Firebase Auth los separa — usar en Register.jsx). */
+  /** Registro con email/contraseña. */
   async registerWithEmailPassword(email, password) {
     const cred = await createUserWithEmailAndPassword(auth, email, password);
     return ensureUserProfile(cred.user);
@@ -102,8 +97,7 @@ export const firebaseAuthAdapter = {
     return this.sendPasswordReset(email);
   },
 
-  /** Alias con la firma {resetToken, newPassword} que usa ResetPassword.jsx.
-   *  En Firebase, resetToken ES el "oobCode" que llega en el link del email. */
+  /** Alias con la firma {resetToken, newPassword} que usa ResetPassword.jsx. */
   async resetPassword({ resetToken, newPassword }) {
     return this.confirmPasswordReset(resetToken, newPassword);
   },
@@ -118,10 +112,6 @@ export const firebaseAuthAdapter = {
     if (provider !== 'google') {
       throw new Error(`Proveedor no soportado: ${provider}`);
     }
-    // Diagnóstico previo: si authDomain quedó en el fallback de demo,
-    // el popup fallaría contra un dominio inexistente — error distinto
-    // y más confuso que auth/unauthorized-domain. Se corta aquí con un
-    // mensaje exacto en vez de dejar que falle de forma críptica.
     if (auth.config?.authDomain === 'demo-auth-domain') {
       throw new Error(
         'Firebase authDomain no está configurado (VITE_FIREBASE_AUTH_DOMAIN ausente). ' +
@@ -131,6 +121,10 @@ export const firebaseAuthAdapter = {
       );
     }
     try {
+      // CORRECCIÓN: Forzamos la persistencia local inmediatamente antes del popup
+      // para asegurar que el navegador retenga la sesión en modo incógnito o bloqueos de cookies de terceros.
+      await setPersistence(auth, browserLocalPersistence);
+
       const cred = await signInWithPopup(auth, new GoogleAuthProvider());
       return ensureUserProfile(cred.user);
     } catch (err) {
@@ -162,8 +156,36 @@ export const firebaseAuthAdapter = {
     await signOut(auth);
   },
 
-  /** Suscribirse a cambios de sesión (reemplaza el polling manual de AuthContext.jsx). */
+  /** * Suscribirse a cambios de sesión (reemplaza el polling manual de AuthContext.jsx).
+   * CORRECCIÓN: Interceptamos el evento nativo de Firebase para resolver de manera 
+   * asíncrona y segura el perfil de Firestore ANTES de notificar al AuthContext de la aplicación.
+   */
   onAuthStateChanged(callback) {
-    return onAuthStateChanged(auth, callback);
+    return onAuthStateChanged(auth, async (firebaseUser) => {
+      if (firebaseUser) {
+        try {
+          // Bloqueamos el flujo de cambio de estado de la aplicación hasta garantizar 
+          // que el documento en la base de datos existe y sus propiedades están listas.
+          const profile = await ensureUserProfile(firebaseUser);
+          
+          // Entregamos el objeto unificado (Mismo formato que espera recibir de Base44 .me())
+          callback({
+            uid: firebaseUser.uid,
+            email: firebaseUser.email,
+            ...profile
+          });
+        } catch (error) {
+          console.error("Error al interceptar el perfil de usuario en el adaptador:", error);
+          // Fallback seguro: Pasamos los datos esenciales de Auth para no colapsar la app si Firestore falla temporalmente
+          callback({
+            uid: firebaseUser.uid,
+            email: firebaseUser.email
+          });
+        }
+      } else {
+        // No hay sesión activa, notificamos null de forma directa
+        callback(null);
+      }
+    });
   },
 };
