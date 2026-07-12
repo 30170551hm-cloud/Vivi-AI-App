@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FileCode, CheckCircle, AlertTriangle, FlaskConical, FileText, Code2 } from 'lucide-react';
-import { base44 } from '@/api/base44Client';
+import { backend } from '@/lib/backendClient';
 
 function Section({ icon: Icon, title, children, color = 'text-white/60' }) {
   const [open, setOpen] = useState(false);
@@ -37,7 +37,7 @@ export default function VDEReport({ proposal, onUpdate }) {
   try { files = JSON.parse(proposal.files_affected || '[]'); } catch { files = []; }
 
   const advanceStatus = async (newStatus) => {
-    await base44.entities.ImprovementProposal.update(proposal.id, { status: newStatus });
+    await backend.entities.ImprovementProposal.update(proposal.id, { status: newStatus });
     onUpdate();
   };
 

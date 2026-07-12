@@ -31,14 +31,7 @@ export default function Register() {
     setLoading(true);
     try {
       await authClient.register({ email, password });
-      if (AUTH_MODE === 'base44') {
-        // Base44 envía un código de verificación por email real.
-        setShowOtp(true);
-      } else {
-        // Firebase/local: la cuenta ya queda creada y con sesión iniciada
-        // en este mismo paso — no hay servidor de correo para un OTP real.
-        window.location.href = "/";
-      }
+      window.location.href = "/";
     } catch (err) {
       setError(err.message || "Registration failed");
     } finally {
@@ -79,7 +72,7 @@ export default function Register() {
     setError("");
     try {
       await authClient.loginWithProvider("google", "/");
-      if (AUTH_MODE !== 'base44') window.location.href = "/";
+      window.location.href = "/";
     } catch (err) {
       setError(err.message || "No se pudo continuar con Google");
     }
@@ -180,7 +173,7 @@ export default function Register() {
 
       {AUTH_MODE === 'local' && (
         <div className="mb-4 p-3 rounded-lg bg-amber-500/10 text-amber-600 text-xs">
-          Modo local temporal: sin Base44 ni Firebase configurados. El registro con Google no está disponible; usa email y contraseña.
+          Modo local temporal: Firebase no está completo. El registro con Google no está disponible; usa email y contraseña.
         </div>
       )}
 

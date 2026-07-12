@@ -10,7 +10,7 @@ import {
   AlertDialogCancel,
 } from '@/components/ui/alert-dialog';
 import { Trash2, AlertTriangle, Loader2 } from 'lucide-react';
-import { base44 } from '@/api/base44Client';
+import { backend } from '@/lib/backendClient';
 import { authClient } from '@/lib/authClient';
 
 // Account deletion flow required by Google Play Store policy.
@@ -29,8 +29,8 @@ export default function AccountDeletion() {
       const userId = me?.id;
       if (userId) {
         await Promise.all([
-          base44.entities.Memory.deleteMany({ created_by_id: userId }),
-          base44.entities.ChatMessage.deleteMany({ created_by_id: userId }),
+          backend.entities.Memory.deleteMany({ created_by_id: userId }),
+          backend.entities.ChatMessage.deleteMany({ created_by_id: userId }),
         ]);
       }
       await authClient.logout();

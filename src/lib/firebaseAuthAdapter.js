@@ -1,5 +1,5 @@
 // firebaseAuthAdapter.js — Adaptador de Firebase Auth que replica la forma
-// exacta de la API `base44.auth.*` usada hoy en AuthContext.jsx, Login.jsx,
+// exacta de la API `backend.auth.*` usada hoy en AuthContext.jsx, Login.jsx,
 // Register.jsx, ForgotPassword.jsx, ResetPassword.jsx y ViviSecurity.js:
 //   .me()                                    → usuario actual + su doc de perfil
 //   .updateMe(patch)                         → actualiza el doc users/{uid}

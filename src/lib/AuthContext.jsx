@@ -1,7 +1,6 @@
 import React, { createContext, useState, useContext, useEffect } from 'react';
-import { appParams } from '@/lib/app-params';
 import { authClient } from '@/lib/authClient';
-import { AUTH_MODE, isBase44Configured } from '@/lib/authMode';
+import { AUTH_MODE } from '@/lib/authMode';
 
 const AuthContext = createContext();
 
