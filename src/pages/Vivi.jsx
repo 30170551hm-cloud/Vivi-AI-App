@@ -140,7 +140,7 @@ export default function Vivi() {
         <motion.button
           onClick={toggleMic}
           whileTap={{ scale: 0.92 }}
-          className={`p-6 rounded-full border transition-all shadow-xl touch-manipulation relative ${conversationStarted ? 'bg-gradient-to-br from-emerald-500 to-green-600 border-green-300' : 'bg-white/10 border-white/20 hover:bg-white/15'}`}
+          className={`p-6 rounded-full border transition-all shadow-xl touch-manipulation relative ${conversationStarted ? 'bg-gradient-to-br from-emerald-500 to-green-600 border-green-300' : 'bg-white/10 border-white/20'}`}
           aria-label={conversationStarted ? 'Llamada en vivo' : 'Escuchar'}
         >
           {conversationStarted ? <PhoneCall className="w-7 h-7 text-white" /> : (listening ? <Mic className="w-7 h-7 text-white" /> : <MicOff className="w-7 h-7 text-white/80" />)}
