@@ -24,7 +24,7 @@ import Memoria from '@/pages/Memoria';
 // Add page imports here
 
 const AuthenticatedApp = () => {
-  const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
+  const { isLoadingAuth, isLoadingPublicSettings, authError } = useAuth();
   const location = useLocation();
 
   if (isLoadingPublicSettings || isLoadingAuth) {
@@ -39,8 +39,7 @@ const AuthenticatedApp = () => {
     if (authError.type === 'user_not_registered') {
       return <UserNotRegisteredError />;
     } else if (authError.type === 'auth_required') {
-      navigateToLogin();
-      return null;
+      return <Navigate to="/login" replace state={{ from: location }} />;
     }
   }
 
@@ -51,7 +50,7 @@ const AuthenticatedApp = () => {
         <Route path="/register" element={<Register />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/reset-password" element={<ResetPassword />} />
-        <Route element={<ProtectedRoute unauthenticatedElement={<Navigate to="/login" replace />} />}>
+        <Route element={<ProtectedRoute unauthenticatedElement={<Navigate to="/login" replace state={{ from: location }} />} />}>
           <Route path="/" element={<Vivi />} />
           <Route path="/founder" element={<FounderPanel />} />
           <Route path="/voice-diagnostic" element={<VoiceDiagnostic />} />

@@ -55,4 +55,19 @@ export const authClient = {
     const adapter = await getAdapter();
     return adapter.redirectToLogin(returnUrl);
   },
+  async onAuthStateChanged(callback) {
+    const adapter = await getAdapter();
+    if (typeof adapter.onAuthStateChanged === 'function') {
+      return adapter.onAuthStateChanged(callback);
+    }
+
+    // Fallback para adaptadores sin suscripción reactiva.
+    try {
+      const currentUser = await adapter.me();
+      callback(currentUser);
+    } catch {
+      callback(null);
+    }
+    return () => {};
+  },
 };

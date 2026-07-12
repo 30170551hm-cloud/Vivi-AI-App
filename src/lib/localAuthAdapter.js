@@ -11,6 +11,7 @@
 
 const USERS_KEY = 'vivi_local_users';
 const SESSION_KEY = 'vivi_local_session';
+const SESSION_CHANGED_EVENT = 'vivi_local_auth_changed';
 
 function sanitizeUsersObject(value) {
   const clean = Object.create(null);
@@ -36,6 +37,10 @@ function writeUsers(users) {
 
 function getSessionEmail() {
   return localStorage.getItem(SESSION_KEY);
+}
+
+function emitSessionChanged() {
+  window.dispatchEvent(new Event(SESSION_CHANGED_EVENT));
 }
 
 function defaultProfile(email) {
@@ -84,6 +89,7 @@ export const localAuthAdapter = {
       throw new Error('Email o contraseña inválidos');
     }
     localStorage.setItem(SESSION_KEY, user.email);
+    emitSessionChanged();
     return this.me();
   },
 
@@ -97,6 +103,7 @@ export const localAuthAdapter = {
     users[normalizedEmail] = { ...defaultProfile(normalizedEmail), password };
     writeUsers(users);
     localStorage.setItem(SESSION_KEY, normalizedEmail);
+    emitSessionChanged();
     return { email: normalizedEmail };
   },
 
@@ -122,9 +129,34 @@ export const localAuthAdapter = {
 
   logout() {
     localStorage.removeItem(SESSION_KEY);
+    emitSessionChanged();
   },
 
   redirectToLogin(returnUrl) {
     window.location.href = `/login${returnUrl ? `?from=${encodeURIComponent(returnUrl)}` : ''}`;
+  },
+
+  onAuthStateChanged(callback) {
+    const notify = async () => {
+      try {
+        callback(await localAuthAdapter.me());
+      } catch {
+        callback(null);
+      }
+    };
+
+    notify();
+
+    const onSessionChange = () => {
+      notify();
+    };
+
+    window.addEventListener('storage', onSessionChange);
+    window.addEventListener(SESSION_CHANGED_EVENT, onSessionChange);
+
+    return () => {
+      window.removeEventListener('storage', onSessionChange);
+      window.removeEventListener(SESSION_CHANGED_EVENT, onSessionChange);
+    };
   },
 };

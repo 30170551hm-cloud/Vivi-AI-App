@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { authClient } from "@/lib/authClient";
 import { AUTH_MODE } from "@/lib/authMode";
 import { Button } from "@/components/ui/button";
@@ -11,10 +11,16 @@ import GoogleIcon from "@/components/GoogleIcon";
 import PageTransition from "@/components/PageTransition";
 
 export default function Login() {
+  const navigate = useNavigate();
+  const location = useLocation();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const fromPath =
+    location.state?.from?.pathname ||
+    new URLSearchParams(location.search).get("from") ||
+    "/";
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -22,7 +28,7 @@ export default function Login() {
     setLoading(true);
     try {
       await authClient.loginViaEmailPassword(email, password);
-      window.location.href = "/";
+      navigate(fromPath, { replace: true });
     } catch (err) {
       setError(err.message || "Invalid email or password");
     } finally {
@@ -34,7 +40,7 @@ export default function Login() {
     setError("");
     try {
       await authClient.loginWithProvider("google", "/");
-      window.location.href = "/";
+      navigate(fromPath, { replace: true });
     } catch (err) {
       setError(err.message || "No se pudo iniciar sesión con Google");
     }

@@ -13,17 +13,29 @@ export const AuthProvider = ({ children }) => {
   const [authChecked, setAuthChecked] = useState(false);
   const [appPublicSettings, setAppPublicSettings] = useState(null); // Contains only { id, public_settings }
 
-  useEffect(() => {
-    checkAppState();
-  }, []);
-
   const checkAppState = async () => {
     // ── Fix: Base44 is NOT configured — using Firebase Auth exclusively ──
     // This function is intentionally simplified: Base44 migration is complete,
     // and the public settings check is no longer needed.
     // All auth flows now go through Firebase.
     setIsLoadingPublicSettings(false);
-    await checkUserAuth();
+    setIsLoadingAuth(true);
+
+    try {
+      const unsubscribe = await authClient.onAuthStateChanged((currentUser) => {
+        setUser(currentUser);
+        setIsAuthenticated(Boolean(currentUser));
+        setAuthError(null);
+        setIsLoadingAuth(false);
+        setAuthChecked(true);
+      });
+
+      return unsubscribe;
+    } catch (error) {
+      console.error('Auth listener setup failed, falling back to one-time auth check:', error);
+      await checkUserAuth();
+      return () => {};
+    }
   };
 
   const checkUserAuth = async () => {
@@ -54,6 +66,7 @@ export const AuthProvider = ({ children }) => {
   const logout = (shouldRedirect = true) => {
     setUser(null);
     setIsAuthenticated(false);
+    setAuthError(null);
     
     if (shouldRedirect) {
       // Use the SDK's logout method which handles token cleanup and redirect
@@ -68,6 +81,26 @@ export const AuthProvider = ({ children }) => {
     // Use the SDK's redirectToLogin method
     authClient.redirectToLogin(window.location.href);
   };
+
+  useEffect(() => {
+    let unsubscribe = null;
+    let active = true;
+
+    checkAppState().then((unsub) => {
+      if (!active) {
+        if (typeof unsub === 'function') unsub();
+        return;
+      }
+      unsubscribe = typeof unsub === 'function' ? unsub : null;
+    });
+
+    return () => {
+      active = false;
+      if (typeof unsubscribe === 'function') {
+        unsubscribe();
+      }
+    };
+  }, []);
 
   return (
     <AuthContext.Provider value={{ 

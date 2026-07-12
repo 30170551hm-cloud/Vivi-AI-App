@@ -26,6 +26,17 @@ import app from './firebase';
 
 const auth = getAuth(app);
 const db = getFirestore(app);
+let persistenceReady = false;
+
+async function ensureLocalPersistence() {
+  if (persistenceReady) return;
+  try {
+    await setPersistence(auth, browserLocalPersistence);
+    persistenceReady = true;
+  } catch (error) {
+    console.warn('No se pudo asegurar browserLocalPersistence:', error);
+  }
+}
 
 async function fetchUserProfile(uid) {
   const ref = doc(db, 'users', uid);
@@ -77,12 +88,14 @@ export const firebaseAuthAdapter = {
 
   /** Login con email/contraseña. */
   async loginViaEmailPassword(email, password) {
+    await ensureLocalPersistence();
     const cred = await signInWithEmailAndPassword(auth, email, password);
     return ensureUserProfile(cred.user);
   },
 
   /** Registro con email/contraseña. */
   async registerWithEmailPassword(email, password) {
+    await ensureLocalPersistence();
     const cred = await createUserWithEmailAndPassword(auth, email, password);
     return ensureUserProfile(cred.user);
   },
@@ -123,7 +136,7 @@ export const firebaseAuthAdapter = {
     try {
       // CORRECCIÓN: Forzamos la persistencia local inmediatamente antes del popup
       // para asegurar que el navegador retenga la sesión en modo incógnito o bloqueos de cookies de terceros.
-      await setPersistence(auth, browserLocalPersistence);
+      await ensureLocalPersistence();
 
       const cred = await signInWithPopup(auth, new GoogleAuthProvider());
       return ensureUserProfile(cred.user);
