@@ -86,7 +86,7 @@ export const localAuthAdapter = {
     const normalizedEmail = String(email).toLowerCase().trim();
     const user = Object.prototype.hasOwnProperty.call(users, normalizedEmail) ? users[normalizedEmail] : null;
     if (!user || user.password !== password) {
-      throw new Error('Email o contraseña inválidos');
+      throw new Error('Invalid email or password');
     }
     localStorage.setItem(SESSION_KEY, user.email);
     emitSessionChanged();
@@ -140,7 +140,8 @@ export const localAuthAdapter = {
     const notify = async () => {
       try {
         callback(await localAuthAdapter.me());
-      } catch {
+      } catch (error) {
+        console.warn('[localAuthAdapter] Failed to resolve auth state:', error);
         callback(null);
       }
     };

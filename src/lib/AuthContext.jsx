@@ -22,12 +22,16 @@ export const AuthProvider = ({ children }) => {
     setIsLoadingAuth(true);
 
     try {
+      let initialized = false;
       const unsubscribe = await authClient.onAuthStateChanged((currentUser) => {
         setUser(currentUser);
         setIsAuthenticated(Boolean(currentUser));
         setAuthError(null);
-        setIsLoadingAuth(false);
-        setAuthChecked(true);
+        if (!initialized) {
+          initialized = true;
+          setIsLoadingAuth(false);
+          setAuthChecked(true);
+        }
       });
 
       return unsubscribe;
@@ -86,12 +90,19 @@ export const AuthProvider = ({ children }) => {
     let unsubscribe = null;
     let active = true;
 
-    checkAppState().then((unsub) => {
+    checkAppState().then((authUnsubscribe) => {
+      if (typeof authUnsubscribe !== 'function') return;
       if (!active) {
-        if (typeof unsub === 'function') unsub();
+        authUnsubscribe();
         return;
       }
-      unsubscribe = typeof unsub === 'function' ? unsub : null;
+      unsubscribe = authUnsubscribe;
+    }).catch((error) => {
+      console.error('Auth initialization failed:', error);
+      if (!active) return;
+      setIsLoadingAuth(false);
+      setAuthChecked(true);
+      setIsAuthenticated(false);
     });
 
     return () => {

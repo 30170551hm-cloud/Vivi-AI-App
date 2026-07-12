@@ -26,16 +26,22 @@ import app from './firebase';
 
 const auth = getAuth(app);
 const db = getFirestore(app);
-let persistenceReady = false;
+let persistencePromise = null;
+let persistenceFailed = false;
 
 async function ensureLocalPersistence() {
-  if (persistenceReady) return;
-  try {
-    await setPersistence(auth, browserLocalPersistence);
-    persistenceReady = true;
-  } catch (error) {
-    console.warn('No se pudo asegurar browserLocalPersistence:', error);
+  if (persistenceFailed) return false;
+  if (!persistencePromise) {
+    persistencePromise = setPersistence(auth, browserLocalPersistence)
+      .then(() => true)
+      .catch((error) => {
+        persistenceFailed = true;
+        persistencePromise = null;
+        console.warn('Failed to ensure browserLocalPersistence:', error);
+        return false;
+      });
   }
+  return await persistencePromise;
 }
 
 async function fetchUserProfile(uid) {

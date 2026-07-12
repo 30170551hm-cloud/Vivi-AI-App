@@ -42,7 +42,7 @@ export default function Login() {
       await authClient.loginWithProvider("google", "/");
       navigate(fromPath, { replace: true });
     } catch (err) {
-      setError(err.message || "No se pudo iniciar sesión con Google");
+      setError(err.message || "Could not sign in with Google");
     }
   };
 
