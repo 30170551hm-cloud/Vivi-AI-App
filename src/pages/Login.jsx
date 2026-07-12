@@ -34,9 +34,7 @@ export default function Login() {
     setError("");
     try {
       await authClient.loginWithProvider("google", "/");
-      // Base44/Firebase manejan la redirección/navegación de vuelta ellos
-      // mismos tras un login OAuth exitoso.
-      if (AUTH_MODE !== 'base44') window.location.href = "/";
+      window.location.href = "/";
     } catch (err) {
       setError(err.message || "No se pudo iniciar sesión con Google");
     }
@@ -81,7 +79,7 @@ export default function Login() {
 
       {AUTH_MODE === 'local' && (
         <div className="mb-4 p-3 rounded-lg bg-amber-500/10 text-amber-600 text-xs">
-          Modo local temporal: sin Base44 ni Firebase configurados. El login con Google no está disponible; usa email y contraseña.
+          Modo local temporal: Firebase no está completo. El login con Google no está disponible; usa email y contraseña.
         </div>
       )}
 

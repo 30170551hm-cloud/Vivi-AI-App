@@ -15,7 +15,7 @@
 
 import { ModuleBase } from '../core/ModuleBase';
 import { EVENTS } from '../events';
-import { base44 } from '@/api/base44Client';
+import { backend } from '@/lib/backendClient';
 
 import WebSearchTool from '../tools/WebSearchTool';
 import MemoryTool from '../tools/MemoryTool';
@@ -192,7 +192,7 @@ Si la solicitud es una conversación normal, saludo, o pregunta que Vivi puede r
     }
 
     // Persist to entity for permanent audit trail (fire-and-forget)
-    this.safe(() => base44.entities.ToolAction.create({
+    this.safe(() => backend.entities.ToolAction.create({
       tool_name: entry.tool_name,
       action: entry.action,
       input_summary: entry.input_summary,
@@ -210,7 +210,7 @@ Si la solicitud es una conversación normal, saludo, o pregunta que Vivi puede r
 
   /** Get recent persisted actions from the database. */
   async getPersistedActions(limit = 50) {
-    return await this.safe(() => base44.entities.ToolAction.list('-created_date', limit), []);
+    return await this.safe(() => backend.entities.ToolAction.list('-created_date', limit), []);
   }
 
   _diag(message) {

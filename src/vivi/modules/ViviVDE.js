@@ -25,7 +25,7 @@
 
 import { ModuleBase } from '../core/ModuleBase';
 import { EVENTS } from '../events';
-import { base44 } from '@/api/base44Client';
+import { backend } from '@/lib/backendClient';
 import { AI } from '@/lib/aiProvider';
 
 const VDE_SYSTEM_PROMPT = `Eres el Vivi Development Engine (VDE), el ingeniero de software interno de Vivi AI.
@@ -108,7 +108,7 @@ export default class ViviVDE extends ModuleBase {
 
     // ── Step 2: Create the ImprovementProposal with the full report ──
     const proposal = await this.safe(() =>
-      base44.entities.ImprovementProposal.create({
+      backend.entities.ImprovementProposal.create({
         title: report.title || request.slice(0, 80),
         description: report.description || request,
         category,
@@ -228,7 +228,7 @@ Sé específico y completo. Genera código real, funcional, listo para implement
    */
   async getPendingProposals() {
     const all = await this.safe(() =>
-      base44.entities.ImprovementProposal.filter({ source: 'vde' }, '-created_date', 50)
+      backend.entities.ImprovementProposal.filter({ source: 'vde' }, '-created_date', 50)
     , []);
     return (all || []).filter((p) =>
       ['diseñada', 'implementada', 'probada'].includes(p.status)
@@ -240,7 +240,7 @@ Sé específico y completo. Genera código real, funcional, listo para implement
    */
   async listAllProposals(limit = 100) {
     return await this.safe(() =>
-      base44.entities.ImprovementProposal.list('-created_date', limit)
+      backend.entities.ImprovementProposal.list('-created_date', limit)
     , []);
   }
 
@@ -252,7 +252,7 @@ Sé específico y completo. Genera código real, funcional, listo para implement
     this._diag('Creating algorithm', { title });
 
     const proposal = await this.safe(() =>
-      base44.entities.ImprovementProposal.create({
+      backend.entities.ImprovementProposal.create({
         title,
         description: description || '',
         category: category || 'otro',
@@ -287,7 +287,7 @@ Sé específico y completo. Genera código real, funcional, listo para implement
   async editProposal(id, updates) {
     this._diag('Editing proposal', { id });
     const updated = await this.safe(() =>
-      base44.entities.ImprovementProposal.update(id, updates)
+      backend.entities.ImprovementProposal.update(id, updates)
     , null);
     if (updated) {
       this.emit(EVENTS.LOG_ADDED, {
@@ -304,7 +304,7 @@ Sé específico y completo. Genera código real, funcional, listo para implement
    */
   async deleteProposal(id) {
     this._diag('Deleting proposal', { id });
-    await this.safe(() => base44.entities.ImprovementProposal.delete(id));
+    await this.safe(() => backend.entities.ImprovementProposal.delete(id));
     this.emit(EVENTS.LOG_ADDED, {
       module: 'vde',
       message: `Propuesta eliminada: ${id}`,

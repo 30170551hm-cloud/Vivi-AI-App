@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, Volume2, Play, RefreshCw, AlertCircle, CheckCircle2, XCircle, Activity } from 'lucide-react';
+import { ArrowLeft, Volume2, Play, RefreshCw, CheckCircle2, XCircle, Activity } from 'lucide-react';
 import { useVivi } from '@/vivi/hooks/useVivi';
 import { usePullToRefresh } from '@/hooks/usePullToRefresh';
 import PullToRefreshIndicator from '@/components/vivi/PullToRefreshIndicator';
@@ -109,7 +109,7 @@ export default function VoiceDiagnostic() {
               <Row label="Plataforma" value={info.env?.platform || 'unknown'} />
               <Row label="Navegador" value={info.env?.browser || 'unknown'} />
               <Row label="En iframe" value={info.env?.inIframe ? 'Sí' : 'No'} />
-              <Row label="Vista previa Base44" value={info.env?.isBase44Preview ? 'Sí' : 'No'} />
+              <Row label="Vista previa builder" value={info.env?.isBase44Preview ? 'Sí' : 'No'} />
             </dl>
           </div>
         </div>

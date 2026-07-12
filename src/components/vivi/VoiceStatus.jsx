@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Volume2, Cpu, Globe, AlertTriangle, CheckCircle2, XCircle } from 'lucide-react';
+import { Volume2, Globe, AlertTriangle, CheckCircle2, XCircle } from 'lucide-react';
 import { useVivi } from '@/vivi/hooks/useVivi';
 
 // Voice system diagnostics for the Founder panel.
@@ -58,7 +58,7 @@ export default function VoiceStatus() {
           <Row label="Plataforma" value={status.env.platform} />
           <Row label="Navegador" value={status.env.browser} />
           <Row label="Dentro de iframe" value={status.env.inIframe ? 'Sí' : 'No'} />
-          <Row label="Vista previa Base44" value={status.env.isBase44Preview ? 'Sí' : 'No'} />
+          <Row label="Vista previa builder" value={status.env.isBase44Preview ? 'Sí' : 'No'} />
         </div>
       </div>
 

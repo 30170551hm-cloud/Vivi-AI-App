@@ -1,77 +1,58 @@
-# Base44 Project
+# Vivi AI (Firebase-only)
 
-Use this repository to run and edit the app locally, then publish changes back through Base44.
+Este proyecto ya no usa Base44 en runtime. Autenticación, datos y archivos funcionan con Firebase.
 
-Any change pushed to the repo will also be reflected in the Base44 Builder.
+## Requisitos
 
-## Prerequisites
+1. Node.js 20+
+2. `npm install`
+3. Proyecto Firebase con Auth, Firestore, Storage y Functions habilitados
 
-1. Clone the repository using the project's Git URL.
-2. Navigate to the project directory.
-3. Install dependencies: `npm install`.
-4. Install the Base44 CLI: `npm install -g base44@latest`.
+## Variables de entorno frontend
 
-See the [Base44 CLI docs](https://docs.base44.com/developers/references/cli/get-started/overview) if you want to run Base44 commands directly.
-
-## Run Locally
-
-Run the full local development environment from the project root:
+Crea `.env.local` con:
 
 ```bash
-base44 dev
+VITE_FIREBASE_API_KEY=
+VITE_FIREBASE_AUTH_DOMAIN=
+VITE_FIREBASE_PROJECT_ID=
+VITE_FIREBASE_STORAGE_BUCKET=
+VITE_FIREBASE_MESSAGING_SENDER_ID=
+VITE_FIREBASE_APP_ID=
+
+# Solo fallback temporal (opcional)
+VITE_GEMINI_API_KEY=
+VITE_GEMINI_MODEL=gemini-1.5-flash
+
+# Solo para desarrollo local controlado sin Firebase completo
+VITE_ALLOW_LOCAL_AUTH=false
 ```
 
-`base44 dev` starts the local Base44 development backend and, when this app is configured for it, also starts the frontend dev server for you. Use the frontend URL printed by the command.
-
-For example, when the Base44 project config includes a `serveCommand`, `base44 dev` can launch the frontend too:
-
-```json5
-{
-  "site": {
-    "serveCommand": "npm run dev"
-  }
-}
-```
-
-In a Base44 project this lives in `base44/config.jsonc`.
-
-## Run Only The Frontend
-
-If you only want to work on the frontend against the hosted Base44 backend, run:
+## Desarrollo
 
 ```bash
 npm run dev
 ```
 
-Open the local URL printed by Vite.
-
-## Use The Hosted Backend
-
-For frontend-only development, create or update `.env.local` in the project root:
+## Validación
 
 ```bash
-VITE_BASE44_APP_ID=your_app_id
-VITE_BASE44_APP_BASE_URL=https://your-app.base44.app
+npm run lint
+npm run build
 ```
 
-`VITE_BASE44_APP_ID` identifies the Base44 app.
+## Functions (backend)
 
-`VITE_BASE44_APP_BASE_URL` tells the Base44 Vite plugin where to send local `/api` requests. Point it at your deployed Base44 app URL when you want the local frontend to use the hosted backend.
+Configura secrets en Firebase Functions (nunca en frontend):
 
-When you use `base44 dev`, the command injects the local Base44 values for you, so `.env.local` is mainly needed for frontend-only workflows.
+- `OPENAI_API_KEY`
+- `GEMINI_API_KEY`
+- `GITHUB_TOKEN`
+- `REPO_EDIT_ALLOWLIST` (CSV de prefijos permitidos)
+- `REPO_EDIT_REQUIRE_APPROVAL` (`true|false`)
 
-## Publish Your Changes
-
-After pushing your changes to git, open the Base44 dashboard and publish the app:
+Luego despliega:
 
 ```bash
-base44 dashboard open
+firebase deploy --only functions
 ```
-
-## Docs & Support
-
-Documentation: [https://docs.base44.com/Integrations/Using-GitHub](https://docs.base44.com/Integrations/Using-GitHub)
-
-Base44 CLI command reference: [https://docs.base44.com/developers/references/cli/commands/introduction](https://docs.base44.com/developers/references/cli/commands/introduction)
-
-Support: [https://app.base44.com/support](https://app.base44.com/support)

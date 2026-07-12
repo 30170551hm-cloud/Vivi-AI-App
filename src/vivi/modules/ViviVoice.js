@@ -33,7 +33,7 @@
 
 import { ModuleBase } from '../core/ModuleBase';
 import { EVENTS } from '../events';
-import { base44 } from '@/api/base44Client';
+import { backend } from '@/lib/backendClient';
 import { EMOTION_VOICE, normalizeEmotion } from '../emotionConfig';
 
 const DEFAULT_VOICE_CONFIG = { name: '', rate: 0.85, pitch: 1.0, volume: 1.0 };
@@ -910,7 +910,7 @@ export default class ViviVoice extends ModuleBase {
 
     let result;
     try {
-      result = await base44.integrations.Core.GenerateSpeech({
+      result = await backend.integrations.Core.GenerateSpeech({
         text: text.slice(0, 5000),
         language_code: (lang || this._lang).slice(0, 2),
       });

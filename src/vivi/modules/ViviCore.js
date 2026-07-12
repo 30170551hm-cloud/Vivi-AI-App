@@ -15,7 +15,7 @@
 
 import { ModuleBase } from '../core/ModuleBase';
 import { EVENTS } from '../events';
-import { base44 } from '@/api/base44Client';
+import { backend } from '@/lib/backendClient';
 import { authClient } from '@/lib/authClient';
 
 const FOUNDER_NAME = 'Henrry Moyses García Rojas';
@@ -1101,7 +1101,7 @@ Vivi:`,
   }
 
   _persistChat(role, content) {
-    this.safe(() => base44.entities.ChatMessage.create({ role, content }));
+    this.safe(() => backend.entities.ChatMessage.create({ role, content }));
   }
 
   /** Allow external callers (API module) to send input programmatically. */

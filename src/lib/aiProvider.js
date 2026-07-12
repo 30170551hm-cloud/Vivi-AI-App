@@ -1,14 +1,14 @@
 // aiProvider.js — El cerebro de IA de Vivi, sin Base44.
 //
-// Implementa el MISMO contrato que base44.integrations.Core.InvokeLLM
+// Implementa el MISMO contrato que backend.integrations.Core.InvokeLLM
 // (verificado contra los 18+ call sites reales del proyecto):
 //   AI.InvokeLLM({ prompt, response_json_schema?, file_urls?, add_context_from_internet? })
 //     → objeto JSON (si hay schema) o string (si no)
 //
 // Selección de proveedor, en orden:
-//   1. Base44 — si VITE_BASE44_APP_ID está configurado (compatibilidad).
-//   2. Gemini directo — si VITE_GEMINI_API_KEY está configurado.
-//   3. Error claro con instrucciones — si no hay ninguno.
+//   1. Cloud Function segura (llmProviders/CoreIntegrations).
+//   2. Gemini directo (solo fallback temporal de desarrollo).
+//   3. Error claro con instrucciones.
 //
 // ⚠️ NOTA DE SEGURIDAD (honesta, no escondida): usar VITE_GEMINI_API_KEY
 // incrusta la API key en el bundle del navegador — cualquiera que abra
@@ -81,9 +81,9 @@ async function invokeGeminiDirect({ prompt, response_json_schema, file_urls }) {
   return response_json_schema ? JSON.parse(text) : text;
 }
 
-async function invokeBase44(params) {
-  const { base44 } = await import('@/api/base44Client');
-  return base44.integrations.Core.InvokeLLM(params);
+async function invokeCloudLLM(params) {
+  const { backend } = await import('@/lib/backendClient');
+  return backend.integrations.Core.InvokeLLM(params);
 }
 
 /**
@@ -92,10 +92,12 @@ async function invokeBase44(params) {
  */
 export const AI = {
   async InvokeLLM(params = {}) {
-    const { normalizeEnvValue: n } = await import('@/lib/app-params');
-    const base44AppId = n(import.meta.env?.VITE_BASE44_APP_ID);
-
-    if (base44AppId) return invokeBase44(params);
+    try {
+      return await invokeCloudLLM(params);
+    } catch (err) {
+      if (!GEMINI_API_KEY) throw err;
+      console.warn('[aiProvider] Cloud Function no disponible, usando fallback Gemini directo:', err?.message);
+    }
     if (GEMINI_API_KEY) return invokeGeminiDirect(params);
 
     throw new Error(

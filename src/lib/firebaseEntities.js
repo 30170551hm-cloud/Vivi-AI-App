@@ -1,5 +1,5 @@
 // firebaseEntities.js — Adaptador Firestore que replica la forma exacta de la
-// API `base44.entities.<Nombre>.*` usada hoy por ViviMemory.js y useChat.js.
+// API `backend.entities.<Nombre>.*` usada hoy por ViviMemory.js y useChat.js.
 //
 // OBJETIVO: que migrar un módulo sea cambiar UNA línea de import, no reescribir
 // la lógica de negocio. Cada método de aquí replica el método equivalente de
@@ -66,7 +66,7 @@ function docToRecord(d) {
 
 /**
  * Crea un adaptador de entidad para una colección de Firestore, con la misma
- * forma de API que `base44.entities.<Nombre>`.
+ * forma de API que `backend.entities.<Nombre>`.
  * @param {string} collectionName - nombre de la colección Firestore, ej. 'memories'
  * @param {{ scopedToOwner?: boolean }} opts - si true (default), filtra/inyecta
  *   ownerId = uid actual en todas las operaciones (aislamiento por usuario).
@@ -166,6 +166,7 @@ export function createFirestoreEntity(collectionName, opts = {}) {
 
 // ── Entidades mapeadas 1:1 contra base44/entities/*.jsonc (ver informe de auditoría) ──
 export const FirestoreEntities = {
+  User: createFirestoreEntity('users', { scopedToOwner: false }),
   Memory: createFirestoreEntity('memories'),
   Conversation: createFirestoreEntity('conversations'),
   ChatMessage: createFirestoreEntity('chat_messages'),
