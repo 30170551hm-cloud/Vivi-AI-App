@@ -1,4 +1,4 @@
-# Mivi — Vivi AI Migration Status
+# Vivi AI — Migration Status
 
 ## Architecture
 - **Runtime**: Firebase (Auth, Firestore, Storage, Functions)
@@ -17,13 +17,14 @@
 | proposeRepoChanges | Propose code edits (allowlist-gated) |
 | approveRepoChanges | Approve and apply proposed edits |
 
-## Frontend Modules (27 registered)
+## Frontend Modules (30 registered)
 ViviCore, ViviVoice, ViviAvatar, ViviMemory, ViviKnowledge, ViviIntegrations,
 ViviNotifications, ViviSettings, ViviFounderConsole, ViviSecurity, ViviApi,
 ViviLogger, ViviRealtimeFacts, ViviVenezuela, ViviVenezuelaManual, ViviVAD,
 ViviTOOR, ViviBaseBrain, ViviVDE, ViviFounderAuth, ViviReasoning,
 ViviEmotionEngine, ViviVisionEngine, ViviAudioEngine, ViviLearningEngine,
-ViviConversationEngine, ViviCodeAnalyzer
+ViviConversationEngine, ViviCodeAnalyzer, ViviPermissionManager,
+ViviUniversity, ViviAnalytics
 
 ## Firebase Abstraction Layer (src/lib/)
 | File | Replaces |
@@ -37,21 +38,42 @@ ViviConversationEngine, ViviCodeAnalyzer
 | aiProvider.js | base44.integrations.Core.* |
 | authClient.js | base44.auth.* |
 
+## Firestore Collections
+users, memories, conversations, chat_messages, tool_actions,
+improvement_proposals, certification_tests, repo_change_audits,
+workspace_artifacts, action_logs, knowledge_entries, dev_tasks,
+project_memories, financial_transactions, integration_requests,
+integration_connections
+
 ## Pages (12)
 Login, Register, ForgotPassword, ResetPassword, Vivi, FounderPanel,
 VoiceDiagnostic, Academia, SelfImprovement, VDEConsole, Chat, Memoria
 
 ## Migration Status
 - [x] Firebase abstraction layer
-- [x] Core modules (27)
-- [x] Firebase Functions backend
+- [x] Core modules (27 original)
+- [x] Ported modules: ViviPermissionManager, ViviUniversity, ViviAnalytics
+- [x] Firebase Functions backend (7 endpoints)
 - [x] Vercel deployment config
-- [x] Firestore security rules
+- [x] Firestore security rules (16 collections)
 - [x] CI/CD workflows
-- [ ] Port advanced modules from Base44 app
-- [ ] Verify npm install + npm run build
+- [x] README with deployment guide
+- [x] Module registration in bootstrap
+- [x] Entity adapter updated with new collections
+- [ ] Port remaining advanced modules (ViviSelfEvolution, ViviCertification, etc.)
+- [ ] Verify npm install + npm run build on CI
 - [ ] Deploy to Vercel
-- [ ] Configure Firebase secrets (OPENAI_API_KEY, GEMINI_API_KEY)
+- [ ] Configure Firebase secrets (OPENAI_API_KEY, GEMINI_API_KEY, GITHUB_TOKEN)
+
+## Recent Commits
+- feat: port ViviPermissionManager to Firebase architecture
+- feat: port ViviUniversity to Firebase architecture
+- feat: port ViviAnalytics to Firebase architecture
+- feat: register new modules in bootstrap
+- feat: add entity collections to Firestore adapter
+- feat: add Firestore rules for new collections
+- docs: update README with deployment guide
+- docs: add migration status document
 
 ## Last Updated
 2026-07-13
