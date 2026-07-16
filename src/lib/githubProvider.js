@@ -17,7 +17,7 @@ export const GitHubProvider = {
    * @param {{owner: string, repo: string, branch?: string}} params
    * @returns {Promise<{files: {path:string, type:string, size:number}[], truncated:boolean}>}
    */
-  async getRepoTree({ owner, repo, branch } = {}) {
+  async getRepoTree({ owner, repo, branch }) {
     const { data } = await getRepoTreeFn({ owner, repo, branch });
     return data;
   },
@@ -26,7 +26,7 @@ export const GitHubProvider = {
    * @param {{owner: string, repo: string, path: string, branch?: string}} params
    * @returns {Promise<{path:string, content:string, sha:string, size:number}>}
    */
-  async getRepoFile({ owner, repo, path, branch } = {}) {
+  async getRepoFile({ owner, repo, path, branch }) {
     const { data } = await getRepoFileFn({ owner, repo, path, branch });
     return data;
   },

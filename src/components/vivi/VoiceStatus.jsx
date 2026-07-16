@@ -22,6 +22,9 @@ export default function VoiceStatus() {
 
   if (!status) return null;
 
+  /**
+   * @param {{ label: React.ReactNode; value: React.ReactNode; ok?: boolean }} props
+   */
   const Row = ({ label, value, ok }) => (
     <div className="flex items-center justify-between py-1.5 border-b border-white/5 last:border-0">
       <span className="text-white/50 text-sm">{label}</span>

@@ -6,6 +6,17 @@ import { X } from "lucide-react"
 
 import { cn } from "@/lib/utils"
 
+/**
+ * @typedef {import("react").HTMLAttributes<HTMLDivElement> & {
+ *   className?: string;
+ *   children?: import("react").ReactNode;
+ * }} DialogBlockProps
+ */
+
+/**
+ * @typedef {DialogBlockProps & Record<string, unknown>} DialogContentProps
+ */
+
 const Dialog = DialogPrimitive.Root
 
 const DialogTrigger = DialogPrimitive.Trigger
@@ -14,7 +25,12 @@ const DialogPortal = DialogPrimitive.Portal
 
 const DialogClose = DialogPrimitive.Close
 
-const DialogOverlay = React.forwardRef(({ className, ...props }, ref) => (
+const DialogOverlay = React.forwardRef(
+  /**
+   * @param {DialogBlockProps} props
+   * @param {import("react").ForwardedRef<HTMLDivElement>} ref
+   */
+  ({ className, ...props }, ref) => (
   <DialogPrimitive.Overlay
     ref={ref}
     className={cn(
@@ -25,7 +41,12 @@ const DialogOverlay = React.forwardRef(({ className, ...props }, ref) => (
 ))
 DialogOverlay.displayName = DialogPrimitive.Overlay.displayName
 
-const DialogContent = React.forwardRef(({ className, children, ...props }, ref) => (
+const DialogContent = React.forwardRef(
+  /**
+   * @param {DialogContentProps} props
+   * @param {import("react").ForwardedRef<HTMLDivElement>} ref
+   */
+  ({ className, children, ...props }, ref) => (
   <DialogPortal>
     <DialogOverlay />
     <DialogPrimitive.Content
@@ -46,8 +67,12 @@ const DialogContent = React.forwardRef(({ className, children, ...props }, ref) 
 ))
 DialogContent.displayName = DialogPrimitive.Content.displayName
 
-const DialogHeader = ({
-  className,
+const DialogHeader = (
+  /**
+   * @param {DialogBlockProps} props
+   */
+  {
+  className = '',
   ...props
 }) => (
   <div
@@ -56,8 +81,12 @@ const DialogHeader = ({
 )
 DialogHeader.displayName = "DialogHeader"
 
-const DialogFooter = ({
-  className,
+const DialogFooter = (
+  /**
+   * @param {DialogBlockProps} props
+   */
+  {
+  className = '',
   ...props
 }) => (
   <div
@@ -66,7 +95,12 @@ const DialogFooter = ({
 )
 DialogFooter.displayName = "DialogFooter"
 
-const DialogTitle = React.forwardRef(({ className, ...props }, ref) => (
+const DialogTitle = React.forwardRef(
+  /**
+   * @param {DialogBlockProps} props
+   * @param {import("react").ForwardedRef<HTMLHeadingElement>} ref
+   */
+  ({ className, ...props }, ref) => (
   <DialogPrimitive.Title
     ref={ref}
     className={cn("text-lg font-semibold leading-none tracking-tight", className)}
@@ -74,7 +108,12 @@ const DialogTitle = React.forwardRef(({ className, ...props }, ref) => (
 ))
 DialogTitle.displayName = DialogPrimitive.Title.displayName
 
-const DialogDescription = React.forwardRef(({ className, ...props }, ref) => (
+const DialogDescription = React.forwardRef(
+  /**
+   * @param {DialogBlockProps} props
+   * @param {import("react").ForwardedRef<HTMLParagraphElement>} ref
+   */
+  ({ className, ...props }, ref) => (
   <DialogPrimitive.Description
     ref={ref}
     className={cn("text-sm text-muted-foreground", className)}

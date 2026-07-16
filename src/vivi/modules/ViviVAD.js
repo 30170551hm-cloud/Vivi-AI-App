@@ -131,6 +131,15 @@ export default class ViviVAD extends ModuleBase {
     return Math.sqrt(sum / buffer.length);
   }
 
+  _diag(message, data) {
+    this.emit(EVENTS.LOG_ADDED, {
+      module: 'vad',
+      message,
+      data,
+      timestamp: Date.now(),
+    });
+  }
+
   /**
    * Stop monitoring and release all audio resources.
    * Called by ViviVoice when TTS ends or is cancelled.

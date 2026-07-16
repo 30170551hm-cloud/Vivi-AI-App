@@ -25,7 +25,15 @@ const GEMINI_API_KEY = normalizeEnvValue(import.meta.env?.VITE_GEMINI_API_KEY);
 const GEMINI_MODEL = normalizeEnvValue(import.meta.env?.VITE_GEMINI_MODEL) || 'gemini-1.5-flash';
 const GEMINI_ENDPOINT = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent`;
 
+/**
+ * @typedef {{ text?: string; inlineData?: { mimeType: string; data: string } }} GeminiPart
+ */
+
+/**
+ * @param {{ prompt: string; response_json_schema?: object; file_urls?: string[] }} params
+ */
 async function invokeGeminiDirect({ prompt, response_json_schema, file_urls }) {
+  /** @type {GeminiPart[]} */
   const parts = [{ text: prompt }];
 
   // Soporte multimodal: descarga cada imagen y la envía inline (Gemini
@@ -81,6 +89,9 @@ async function invokeGeminiDirect({ prompt, response_json_schema, file_urls }) {
   return response_json_schema ? JSON.parse(text) : text;
 }
 
+/**
+ * @param {Record<string, unknown>} params
+ */
 async function invokeBase44(params) {
   const { base44 } = await import('@/api/base44Client');
   return base44.integrations.Core.InvokeLLM(params);
@@ -91,7 +102,10 @@ async function invokeBase44(params) {
  * Los módulos llaman AI.InvokeLLM(...) con el mismo contrato de siempre.
  */
 export const AI = {
-  async InvokeLLM(params = {}) {
+  /**
+   * @param {{ prompt: string; response_json_schema?: object; file_urls?: string[] }} params
+   */
+  async InvokeLLM(params) {
     const { normalizeEnvValue: n } = await import('@/lib/app-params');
     const base44AppId = n(import.meta.env?.VITE_BASE44_APP_ID);
 

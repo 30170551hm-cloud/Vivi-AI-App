@@ -25,7 +25,7 @@ export const CoreIntegrations = {
    * @param {{prompt: string, response_json_schema?: object, file_urls?: string[], provider?: 'openai'|'gemini'}} params
    * @returns {Promise<object|string>} objeto JSON si hay schema, string si no
    */
-  async InvokeLLM({ prompt, response_json_schema, file_urls, provider } = {}) {
+  async InvokeLLM({ prompt, response_json_schema, file_urls, provider }) {
     const { data } = await callLLMFn({ prompt, response_json_schema, file_urls, provider });
     return data;
   },
@@ -35,7 +35,7 @@ export const CoreIntegrations = {
    * @param {{prompt: string}} params
    * @returns {Promise<{url: string}>}
    */
-  async GenerateImage({ prompt } = {}) {
+  async GenerateImage({ prompt }) {
     const { data } = await generateImageFn({ prompt });
     return data;
   },
@@ -48,7 +48,7 @@ export const CoreIntegrations = {
    * @param {{text: string, language_code?: string}} params
    * @returns {Promise<{url: string}>}
    */
-  async GenerateSpeech({ text } = {}) {
+  async GenerateSpeech({ text }) {
     const { data } = await generateSpeechFn({ text });
     return data;
   },

@@ -313,9 +313,9 @@ Sé específico y completo. Genera código real, funcional, listo para implement
     return true;
   }
 
-  _diag(message) {
+  _diag(message, data) {
     console.log(`[ViviVDE] ${message}`);
-    this.emit(EVENTS.LOG_ADDED, { module: 'vde', message, timestamp: Date.now() });
+    this.emit(EVENTS.LOG_ADDED, { module: 'vde', message, data, timestamp: Date.now() });
   }
 
   _diagError(message, error) {

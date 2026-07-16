@@ -279,6 +279,9 @@ export default function VoiceDiagnostic() {
   );
 }
 
+/**
+ * @param {{ label: React.ReactNode; value: React.ReactNode; ok?: boolean }} props
+ */
 function Row({ label, value, ok }) {
   return (
     <div className="flex justify-between items-center">

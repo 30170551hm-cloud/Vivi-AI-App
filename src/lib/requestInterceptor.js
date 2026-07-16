@@ -26,8 +26,15 @@ function initRequestLog() {
 
   const originalFetch = window.fetch;
   window.fetch = async function interceptedFetch(input, init) {
-    const url = typeof input === 'string' ? input : input?.url;
-    const method = init?.method || (typeof input === 'object' && input?.method) || 'GET';
+    const url =
+      typeof input === 'string'
+        ? input
+        : input instanceof Request
+          ? input.url
+          : input instanceof URL
+            ? input.toString()
+            : String(input);
+    const method = init?.method || (input instanceof Request ? input.method : 'GET');
     const stack = new Error().stack;
     const timestamp = new Date().toISOString();
     const entry = {
@@ -91,7 +98,7 @@ function initRequestLog() {
 
     return xhr;
   }
-  window.XMLHttpRequest = InterceptedXHR;
+  window.XMLHttpRequest = /** @type {typeof XMLHttpRequest} */ (InterceptedXHR);
 
   console.log(
     `${LOG_PREFIX} Interceptor global instalado. Todas las peticiones fetch/XHR quedarán registradas ` +

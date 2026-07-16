@@ -569,7 +569,11 @@ Responde SOLO con el saludo, en español venezolano natural.`,
     const result = await this.safe(() => memory.loadPermanentContext(), null);
     if (result?.history && result.history.length > 0) {
       this._history = result.history;
-      this._diag(`Restored ${result.history.length} messages and ${result.memories?.length || 0} memories from past sessions`);
+      this.emit(EVENTS.LOG_ADDED, {
+        module: 'core',
+        message: `Restored ${result.history.length} messages and ${result.memories?.length || 0} memories from past sessions`,
+        timestamp: Date.now(),
+      });
     }
   }
 

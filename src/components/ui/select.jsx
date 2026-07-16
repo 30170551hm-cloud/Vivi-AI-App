@@ -6,13 +6,25 @@ import { Check, ChevronDown, ChevronUp } from "lucide-react"
 
 import { cn } from "@/lib/utils"
 
+/** @typedef {import("react").ComponentPropsWithoutRef<typeof SelectPrimitive.Trigger>} SelectTriggerProps */
+/** @typedef {import("react").ComponentPropsWithoutRef<typeof SelectPrimitive.ScrollUpButton>} SelectScrollButtonProps */
+/** @typedef {import("react").ComponentPropsWithoutRef<typeof SelectPrimitive.Content>} SelectContentProps */
+/** @typedef {import("react").ComponentPropsWithoutRef<typeof SelectPrimitive.Label>} SelectLabelProps */
+/** @typedef {import("react").ComponentPropsWithoutRef<typeof SelectPrimitive.Item>} SelectItemProps */
+/** @typedef {import("react").ComponentPropsWithoutRef<typeof SelectPrimitive.Separator>} SelectSeparatorProps */
+
 const Select = SelectPrimitive.Root
 
 const SelectGroup = SelectPrimitive.Group
 
 const SelectValue = SelectPrimitive.Value
 
-const SelectTrigger = React.forwardRef(({ className, children, ...props }, ref) => (
+const SelectTrigger = React.forwardRef(
+  /**
+   * @param {SelectTriggerProps} props
+   * @param {import("react").ForwardedRef<HTMLButtonElement>} ref
+   */
+  ({ className, children, ...props }, ref) => (
   <SelectPrimitive.Trigger
     ref={ref}
     className={cn(
@@ -28,7 +40,12 @@ const SelectTrigger = React.forwardRef(({ className, children, ...props }, ref) 
 ))
 SelectTrigger.displayName = SelectPrimitive.Trigger.displayName
 
-const SelectScrollUpButton = React.forwardRef(({ className, ...props }, ref) => (
+const SelectScrollUpButton = React.forwardRef(
+  /**
+   * @param {SelectScrollButtonProps} props
+   * @param {import("react").ForwardedRef<HTMLDivElement>} ref
+   */
+  ({ className, ...props }, ref) => (
   <SelectPrimitive.ScrollUpButton
     ref={ref}
     className={cn("flex cursor-default items-center justify-center py-1", className)}
@@ -38,7 +55,12 @@ const SelectScrollUpButton = React.forwardRef(({ className, ...props }, ref) => 
 ))
 SelectScrollUpButton.displayName = SelectPrimitive.ScrollUpButton.displayName
 
-const SelectScrollDownButton = React.forwardRef(({ className, ...props }, ref) => (
+const SelectScrollDownButton = React.forwardRef(
+  /**
+   * @param {SelectScrollButtonProps} props
+   * @param {import("react").ForwardedRef<HTMLDivElement>} ref
+   */
+  ({ className, ...props }, ref) => (
   <SelectPrimitive.ScrollDownButton
     ref={ref}
     className={cn("flex cursor-default items-center justify-center py-1", className)}
@@ -49,7 +71,12 @@ const SelectScrollDownButton = React.forwardRef(({ className, ...props }, ref) =
 SelectScrollDownButton.displayName =
   SelectPrimitive.ScrollDownButton.displayName
 
-const SelectContent = React.forwardRef(({ className, children, position = "popper", ...props }, ref) => (
+const SelectContent = React.forwardRef(
+  /**
+   * @param {SelectContentProps} props
+   * @param {import("react").ForwardedRef<HTMLDivElement>} ref
+   */
+  ({ className, children, position = "popper", ...props }, ref) => (
   <SelectPrimitive.Portal>
     <SelectPrimitive.Content
       ref={ref}
@@ -73,7 +100,12 @@ const SelectContent = React.forwardRef(({ className, children, position = "poppe
 ))
 SelectContent.displayName = SelectPrimitive.Content.displayName
 
-const SelectLabel = React.forwardRef(({ className, ...props }, ref) => (
+const SelectLabel = React.forwardRef(
+  /**
+   * @param {SelectLabelProps} props
+   * @param {import("react").ForwardedRef<HTMLDivElement>} ref
+   */
+  ({ className, ...props }, ref) => (
   <SelectPrimitive.Label
     ref={ref}
     className={cn("px-2 py-1.5 text-sm font-semibold", className)}
@@ -81,9 +113,15 @@ const SelectLabel = React.forwardRef(({ className, ...props }, ref) => (
 ))
 SelectLabel.displayName = SelectPrimitive.Label.displayName
 
-const SelectItem = React.forwardRef(({ className, children, ...props }, ref) => (
+const SelectItem = React.forwardRef(
+  /**
+   * @param {SelectItemProps} props
+   * @param {import("react").ForwardedRef<HTMLDivElement>} ref
+   */
+  ({ className, children, value, ...props }, ref) => (
   <SelectPrimitive.Item
     ref={ref}
+    value={value}
     className={cn(
       "relative flex w-full cursor-default select-none items-center rounded-sm py-1.5 pl-2 pr-8 text-sm outline-none focus:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50",
       className
@@ -99,7 +137,12 @@ const SelectItem = React.forwardRef(({ className, children, ...props }, ref) => 
 ))
 SelectItem.displayName = SelectPrimitive.Item.displayName
 
-const SelectSeparator = React.forwardRef(({ className, ...props }, ref) => (
+const SelectSeparator = React.forwardRef(
+  /**
+   * @param {SelectSeparatorProps} props
+   * @param {import("react").ForwardedRef<HTMLDivElement>} ref
+   */
+  ({ className, ...props }, ref) => (
   <SelectPrimitive.Separator
     ref={ref}
     className={cn("-mx-1 my-1 h-px bg-muted", className)}

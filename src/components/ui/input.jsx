@@ -2,7 +2,19 @@ import * as React from "react"
 
 import { cn } from "@/lib/utils"
 
-const Input = React.forwardRef(({ className, type, ...props }, ref) => {
+/**
+ * @typedef {import("react").InputHTMLAttributes<HTMLInputElement> & {
+ *   className?: string;
+ *   type?: string;
+ * }} InputProps
+ */
+
+const Input = React.forwardRef(
+  /**
+   * @param {InputProps} props
+   * @param {import("react").ForwardedRef<HTMLInputElement>} ref
+   */
+  ({ className, type, ...props }, ref) => {
   return (
     (<input
       type={type}

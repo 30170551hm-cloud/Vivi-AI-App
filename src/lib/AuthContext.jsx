@@ -3,7 +3,7 @@ import { appParams } from '@/lib/app-params';
 import { authClient } from '@/lib/authClient';
 import { AUTH_MODE, isBase44Configured } from '@/lib/authMode';
 
-const AuthContext = createContext();
+const AuthContext = createContext(null);
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
