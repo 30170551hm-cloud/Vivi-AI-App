@@ -5,8 +5,10 @@
  *
  * When running on Base44 (legacy), the real @base44/sdk is used instead.
  * When running standalone (GitHub/Vercel), the Firebase abstraction layer
- * in @/lib/backendClient is used.
+ * in src/lib/backendClient is used.
  */
+
+import { backend } from '@/lib/backendClient';
 
 // Use Firebase abstraction layer (standalone mode)
 export { backend as base44 } from '@/lib/backendClient';

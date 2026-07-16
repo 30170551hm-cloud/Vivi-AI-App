@@ -68,6 +68,8 @@ export async function load(url, context, nextLoad) {
     if (process.env.TEST_FIREBASE_AUTHDOMAIN) envEntries.push(`VITE_FIREBASE_AUTH_DOMAIN: ${JSON.stringify(process.env.TEST_FIREBASE_AUTHDOMAIN)}`);
         if (process.env.TEST_GEMINI_KEY) envEntries.push(`VITE_GEMINI_API_KEY: ${JSON.stringify(process.env.TEST_GEMINI_KEY)}`);
     if (process.env.TEST_FIREBASE_PROJECTID) envEntries.push(`VITE_FIREBASE_PROJECT_ID: ${JSON.stringify(process.env.TEST_FIREBASE_PROJECTID)}`);
+    if (process.env.TEST_ALLOW_LOCAL_AUTH) envEntries.push(`VITE_ALLOW_LOCAL_AUTH: ${JSON.stringify(process.env.TEST_ALLOW_LOCAL_AUTH)}`);
+    if (process.env.TEST_DEV) envEntries.push(`DEV: ${JSON.stringify(process.env.TEST_DEV === 'true')}`);
     const fakeEnv = `({ ${envEntries.join(', ')} })`;
     const patched = sourceText.replaceAll('import.meta.env', fakeEnv);
     return { ...result, source: patched };
